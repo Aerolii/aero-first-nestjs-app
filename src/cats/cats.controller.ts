@@ -12,12 +12,16 @@ import {
 import { Response } from 'express';
 
 import { CreateCatDto } from '@/cats/cats.dto';
+import { CatsService } from './cats.service';
+import { Cat } from './cats.interface';
 
 @Controller('cats')
 export class CatsController {
+  constructor(private catsService: CatsService) {}
+
   @Get()
-  findAll(): string {
-    return 'This action returns all cats';
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
   }
 
   @Post()
@@ -28,6 +32,7 @@ export class CatsController {
     // @Res() is used to inject the response object
     @Res({ passthrough: true }) res: Response,
   ): CreateCatDto {
+    this.catsService.create(createCatDto);
     res.status(HttpStatus.OK);
     return createCatDto;
   }
