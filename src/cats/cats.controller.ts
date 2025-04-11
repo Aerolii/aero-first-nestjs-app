@@ -1,5 +1,17 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { CreateCatDto } from './cats.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Res,
+} from '@nestjs/common';
+import { Response } from 'express';
+
+import { CreateCatDto } from '@/cats/cats.dto';
 
 @Controller('cats')
 export class CatsController {
@@ -9,8 +21,15 @@ export class CatsController {
   }
 
   @Post()
-  create(createCatDto: CreateCatDto): string {
-    return `This action adds a new cat with name ${createCatDto.name}`;
+  create(
+    @Body() createCatDto: CreateCatDto,
+    // { passthrough: true } is used to set the response status
+    // and not send the response immediately
+    // @Res() is used to inject the response object
+    @Res({ passthrough: true }) res: Response,
+  ): CreateCatDto {
+    res.status(HttpStatus.OK);
+    return createCatDto;
   }
 
   @Get(':id')
